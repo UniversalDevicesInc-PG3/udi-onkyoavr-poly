@@ -8,7 +8,7 @@
 
 import traceback
 import time
-import polyinterface
+import udi_interface
 from OnkyoCore import eISCP,  Receiver
 from  Node_Shared import *
 
@@ -30,7 +30,7 @@ def message_received(message, data):
     except Exception as e:
          LOGGER.error("Raw receive error on message " + message + ' - ' + e )
 
-class AVRNode(polyinterface.Node):
+class AVRNode(udi_interface.Node):
     """
     Class Variables:
     self.primary: String address of the Controller node.
@@ -46,9 +46,9 @@ class AVRNode(polyinterface.Node):
     ##
     #####################################################
 
-    def __init__(self, controller, primary, isy_address, device_address, device_name):
+    def __init__(self, polyglot, primary, isy_address, device_address, device_name):
         #You do NOT have to override the __init__ method, but if you do, you MUST call super.
-        super(AVRNode, self).__init__(controller, primary, isy_address, device_name)
+        super(AVRNode, self).__init__(polyglot, primary, isy_address, device_name)
         LOGGER.debug("Node: Init Node " + device_name + " ("+ device_address + ")")
 
         #set Node specific values
@@ -118,6 +118,10 @@ class AVRNode(polyinterface.Node):
         self.__MSG_INDEX_VALUE = 4
         self.__MSG_INDEX_SERVICE_NOT_SUPPORTED = 5
 
+        polyglot.subscribe(polyglot.START, self.start, isy_address)
+        polyglot.subscribe(polyglot.POLL, self.poll)
+        polyglot.subscribe(polyglot.STOP, self.stop)
+
         LOGGER.debug("Node: Leaving Init")
 
     def start(self):
@@ -152,8 +156,9 @@ class AVRNode(polyinterface.Node):
     ##
     #####################################################
 
-    def shortPoll(self):
-        self.updateStatuses()
+    def poll(self, pollflag):
+        if pollflag == 'shortPoll':
+            self.updateStatuses()
 
     def avrDataReceived(self, message):
         """

@@ -2,7 +2,7 @@
     <nodeDef id="AVRServer">
         <editors />
         <sts>
-            <st id="ST" editor="AVR_BOOL" />
+            <st id="ST" editor="STATUS" />
         </sts>
         <cmds>
             <sends>

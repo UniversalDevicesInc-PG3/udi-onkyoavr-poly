@@ -1,8 +1,8 @@
 
-import polyinterface
+import udi_interface
 import logging
 
-LOGGER = polyinterface.LOGGER
+LOGGER = udi_interface.LOGGER
 
 # constants for ISY Nodeserver interface
 ISY_UOM_2_BOOL = 2 

@@ -338,6 +338,11 @@ def write_nls(logger, avr):
         nls.write("NTC_SEL-37 = N/A\n")
         nls.write("NTC_SEL-38 = UNKNOWN\n")
         nls.write("\n")
+
+        nls.write("STATUS-0 = Disconnected\n")
+        nls.write("STATUS-1 = Connected\n")
+        nls.write("STATUS-2 = Failed\n")
+        nls.write("\n")
         #endregion  - Static code
         # Now write dynamic entires
         nls.write("#Network Services\n")
@@ -372,6 +377,11 @@ def write_editors(logger, avr):
     #region - static code
         editors = open("profile/editor/editors.xml", "w")
         editors.write('<editors>\n')
+        editors.write('    <!-- Status   -->\n')
+        editors.write('    <editor id="STATUS">\n')
+        editors.write('        <range uom="25" subset="0-2" nls="STATUS" />\n')
+        editors.write('    </editor>\n')
+        editors.write('\n')
         editors.write('    <!-- Boolean   -->\n')
         editors.write('    <editor id="AVR_BOOL">\n')
         editors.write('        <range uom="2" subset="0-1" />\n')
