@@ -89,6 +89,7 @@ class AVRServer(udi_interface.Node):
         """
         self.poly.Notices['disc'] = "AVR discovery: Looking for devices on network, this will take few seconds"
         new_device_found = False
+        custom_params = {}
 
         LOGGER.debug( "Looking for Onkyo/Pioneer Devices")
         devices =  Receiver.discover(timeout=5)
@@ -103,10 +104,11 @@ class AVRServer(udi_interface.Node):
             # See if device exists in custom parameters, if not add it
             if cleaned_dev_name not in self.Parameters:
                 LOGGER.info('Adding Discovered device to config: ' + cleaned_dev_name + ' ('+ ipAddr + ')')
-                self.Parameters[cleaned_dev_name] = ipAddr
+                custom_params[cleaned_dev_name] = ipAddr
                 new_device_found = True
 
         self.poly.Notices.delete('disc')
+        self.Parameters.load(custom_params, True) # Send to PG3
         return new_device_found
 
     def generate_name(self, model_name, identifier, )->str:
@@ -234,7 +236,7 @@ class AVRServer(udi_interface.Node):
 if __name__ == "__main__":
     try:
         poly = udi_interface.Interface([])
-        poly.start('1.0.1')
+        poly.start('1.0.2')
         AVRServer(poly, 'controller', 'controller', 'AVRServer')
         poly.runForever()
     except (KeyboardInterrupt, SystemExit):
