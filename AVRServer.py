@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-This is a Polglot NodeServer for a Onkyo/Pioneer AVR written by TangoWhiskey1
+This is a Polglot Node Server for a Onkyo/Pioneer AVR written by TangoWhiskey1
 """
 import udi_interface
 import sys
@@ -61,10 +61,10 @@ class AVRServer(udi_interface.Node):
 
     def start(self):
         """
-        This  runs once the NodeServer connects to Polyglot and gets it's config.
+        This  runs once the Node Server connects to Polyglot and gets it's config.
         No need to Super this method, the parent version does nothing.
         """        
-        LOGGER.info('AVR NodeServer: Started Onkyo/Pioneer AVR Polyglot Node Server')
+        LOGGER.info('AVR Node Server: Started Onkyo/Pioneer AVR Polyglot Node Server')
         self.poly.updateProfile()
         self.poly.setCustomParamsDoc()
 
@@ -158,24 +158,24 @@ class AVRServer(udi_interface.Node):
                     LOGGER.error('Controller: Custom Params device IP format incorrect. IP Address too short:' + isy_addr)
                     continue
                 self.device_nodes[isy_addr] = [device_name, device_addr]
-                LOGGER.debug('AVR NodeServer: Added device_node: ' + device_name + ' as isy address ' + isy_addr + ' (' + device_addr + ')')
+                LOGGER.debug('AVR Node Server: Added device_node: ' + device_name + ' as isy address ' + isy_addr + ' (' + device_addr + ')')
             
             if len(self.device_nodes) == 0:
-                LOGGER.error('AVR NodeServer: No devices found in config, nothing to do!')
+                LOGGER.error('AVR Node Server: No devices found in config, nothing to do!')
                 return
 
             self.configComplete = True
             self.add_devices()
         except Exception as ex:
-            LOGGER.error('AVR NodeServer: Error parsing config in the Projector NodeServer: %s', str(ex))
+            LOGGER.error('AVR Node Server: Error parsing config in the Onkyo Node Server: %s', str(ex))
 
     def add_devices(self):
         """
         Add any devices found
         """
-        LOGGER.debug('AVR NodeServer: add_devices called')
+        LOGGER.debug('AVR Node Server: add_devices called')
         for isy_addr in self.device_nodes.keys():
-            if not isy_addr in self.nodes:
+            if not self.poly.getNode(isy_addr):
                 device_name = self.device_nodes[isy_addr][0]
                 device_addr = self.device_nodes[isy_addr][1]
                 try:                
@@ -187,17 +187,17 @@ class AVRServer(udi_interface.Node):
                     if not self.poly.getNode(isy_addr):
                         self.poly.addNode( AVRNode(self.poly, self.address, isy_addr, device_addr, device_name) )
                 except Exception as ex:
-                    LOGGER.error('AVR NodeServer: Could not add device ' + device_name + ' at address ' + device_addr )
+                    LOGGER.error('AVR Node Server: Could not add device ' + device_name + ' at address ' + device_addr )
                     LOGGER.error('   +--- Could not get entries for profile.  Error: ' + str(ex))
            
     
     def poll(self, pollflag):
         if pollflag == 'longPoll':
-            LOGGER.debug('AVR NodeServer: longPoll')
+            LOGGER.debug('AVR Node Server: longPoll')
             self.heartbeat()
         
     def heartbeat(self,init=False):
-        LOGGER.debug('AVR NodeServer: heartbeat: init={}'.format(init))
+        LOGGER.debug('AVR Node Server: heartbeat: init={}'.format(init))
         if init is not False:
             self.hb = init
         if self.hb == 0:
@@ -209,11 +209,11 @@ class AVRServer(udi_interface.Node):
 
     def delete(self):
         """
-        This is sent by Polyglot upon deletion of the NodeServer. If the process is
+        This is sent by Polyglot upon deletion of the Node Server. If the process is
         co-resident and controlled by Polyglot, it will be terminiated within 5 seconds
         of receiving this message.
         """
-        LOGGER.info('AVR NodeServer: Deleting the Projector Nodeserver')
+        LOGGER.info('AVR Node Server: Deleting the Projector Nodeserver')
 
     def set_module_logs(self,level):
         logging.getLogger('urllib3').setLevel(level)
@@ -234,7 +234,7 @@ class AVRServer(udi_interface.Node):
 if __name__ == "__main__":
     try:
         poly = udi_interface.Interface([])
-        poly.start('1.0.0')
+        poly.start('1.0.1')
         AVRServer(poly, 'controller', 'controller', 'AVRServer')
         poly.runForever()
     except (KeyboardInterrupt, SystemExit):

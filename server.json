@@ -13,8 +13,8 @@
         {
             "title": "Onkyo AVR Nodeserver for Polyglot V3",
             "author": "TangoWhiskey1",
-            "version": "0.3.0",
-            "date":    "March 22, 2022",
+            "version": "1.0.1",
+            "date":    "May 4, 2022",
             "source":  "https://github.com/UniversalDevicesInc-PG3/udi-onkyoavr-poly",
             "license": "https://github.com/UniversalDevicesInc-PG3/udi-onkyoavr-poly/blob/master/LICENSE"
         }
